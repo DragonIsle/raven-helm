@@ -1,0 +1,34 @@
+apiVersion: v1
+entries:
+  raven:
+  - apiVersion: v2
+    created: "2025-09-03T12:33:51.955768+02:00"
+    dependencies:
+    - name: kafka
+      repository: https://charts.bitnami.com/bitnami
+      version: 32.4.3
+    - name: clickhouse
+      repository: https://charts.bitnami.com/bitnami
+      version: 9.4.4
+    - name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.7.27
+    - name: kafka-ui
+      repository: https://provectus.github.io/kafka-ui-charts
+      version: 0.7.6
+    description: Raven dependencies
+    digest: d89b1ebfe23098f7e4040e1da3f616bf0dd377cf0330ec7f9fc8bb31767230e9
+    name: raven
+    urls:
+    - https://dragonisle.github.io/raven-helm/raven-1.0.0.tgz
+    version: 1.0.0
+  raven-compact:
+  - apiVersion: v2
+    created: "2025-09-03T12:33:51.956669+02:00"
+    description: Raven application (compact version)
+    digest: 69c49298f9cda0609d0705205562f09186910c2af7ce7154f8548b03de6ababd
+    name: raven-compact
+    urls:
+    - https://dragonisle.github.io/raven-helm/raven-compact-1.0.0.tgz
+    version: 1.0.0
+generated: "2025-09-03T12:33:51.94177+02:00"

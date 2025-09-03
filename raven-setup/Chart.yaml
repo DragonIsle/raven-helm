@@ -1,5 +1,5 @@
 apiVersion: v2
-name: raven
+name: raven-setup
 version: 1.0.0
 description: Raven dependencies
 dependencies:
