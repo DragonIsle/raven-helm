@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: raven-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: raven-dashboard
+  template:
+    metadata:
+      labels:
+        app: raven-dashboard
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: raven-dashboard
+          image: "{{ .Values.raven.dashboard.image.repository }}:{{ .Values.raven.dashboard.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ALERTS_URL
+              value: "raven-compact-service:8080"
+            - name: METRICS_URL
+              value: "raven-compact-service:8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: raven-dashboard-service
+spec:
+  selector:
+    app: raven-dashboard
+  ports:
+    - protocol: TCP
+      port: 5173
+      targetPort: 80
+  type: ClusterIP

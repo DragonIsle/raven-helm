@@ -1,0 +1,5 @@
+raven-bundle/charts
+raven-bundle/Chart.lock
+.idea
+secrets.sh
+minikube_reset.sh

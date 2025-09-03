@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: raven-alert-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: raven-alert-manager
+  template:
+    metadata:
+      labels:
+        app: raven-alert-manager
+    spec:
+      volumes:
+        - name: app-config
+          configMap:
+            name: alert-manager-config
+      {{ - with .Values.raven.imagePullSecrets }}
+      imagePullSecrets: {{ - toYaml . | nindent 8 }}
+      {{ - end }}
+      containers:
+        - name: raven-alert-manager
+          image: "{{ .Values.raven.alertsManager.image.repository }}:{{ .Values.raven.alertsManager.image.tag }}"
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.raven.postgres.secret }}
+                  key: {{ .Values.raven.postgres.secretKey }}
+            - name: SMTP_USER
+              value: {{ .Values.raven.alertsManager.externalOutputs.email.smtpUser }}
+            - name: SMTP_PASSWORD
+              value: {{ .Values.raven.alertsManager.externalOutputs.email.smtpPassword }}
+            - name: JAVA_OPTS
+              value: -Dconfig.file=/etc/config/application.conf
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: app-config
+              mountPath: /etc/config/
+              readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: raven-alert-manager-service
+spec:
+  selector:
+    app: raven-alert-manager
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

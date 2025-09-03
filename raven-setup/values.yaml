@@ -1,0 +1,96 @@
+kafka:
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    external:
+      protocol: PLAINTEXT
+
+  defaultInitContainers:
+    autoDiscovery:
+      enabled: false
+
+  externalAccess:
+    enabled: true
+    controller:
+      service:
+        type: NodePort
+        nodePorts:
+          - 30001
+          - 30002
+          - 30003
+        useHostIPs: true
+        domain: localhost
+
+  controller:
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      timeoutSeconds: 3
+      failureThreshold: 10
+
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 45
+      periodSeconds: 10
+      timeoutSeconds: 3
+      failureThreshold: 10
+
+    startupProbe:
+      enabled: true
+      periodSeconds: 10
+      failureThreshold: 60
+#    resources:
+#      limits:
+#        cpu: "400m"
+#        memory: "500Mi"
+#      requests:
+#        cpu: "200m"
+#        memory: "300Mi"
+    persistence:
+      enabled: true
+      size: 2Gi
+
+  metrics:
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: monitoring
+    jmx:
+      enabled: true
+
+clickhouse:
+  shards: 1
+  replicaCount: 1
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      labels:
+        release: "monitoring"
+      enabled: true
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 200m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+  keeper:
+    replicaCount: 1
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 200m
+      limits:
+        memory: 512Mi
+        cpu: 500m
+
+kafka-ui:
+  yamlApplicationConfig:
+    kafka:
+      clusters:
+        - name: Raven cluster
+          bootstrapServers: raven-setup-kafka:9092

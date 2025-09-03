@@ -1,0 +1,42 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: raven-setup-flink
+  namespace: default
+spec:
+  image: flink:1.20-scala_2.12
+  flinkVersion: v1_20
+  flinkConfiguration:
+    jobmanager.memory.jvm-overhead.min: "128m"
+    jobmanager.memory.jvm-overhead.max: "256m"
+    taskmanager.memory.off-heap: "false"
+    jobmanager.memory.off-heap: "false"
+    taskmanager.numberOfTaskSlots: "1"
+    metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
+    metrics.reporter.prom.port: "9249"
+    metrics.reporters: prom
+  serviceAccount: flink
+  jobManager:
+    replicas: 1
+    resource:
+      cpu: 0.2
+      memory: "1g"
+    podTemplate:
+      spec:
+        containers:
+          - name: flink-main-container
+            ports:
+              - name: metrics
+                containerPort: 9249
+  taskManager:
+    replicas: 1
+    resource:
+      cpu: 0.3
+      memory: "1g"
+    podTemplate:
+      spec:
+        containers:
+          - name: flink-main-container
+            ports:
+              - name: metrics
+                containerPort: 9249

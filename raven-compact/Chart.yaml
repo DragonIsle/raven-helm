@@ -1,0 +1,4 @@
+apiVersion: v2
+name: raven-compact
+version: 1.0.0
+description: Raven application (compact version)

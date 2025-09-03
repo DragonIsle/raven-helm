@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: raven-setup-flink-metrics
+  namespace: default
+  labels:
+    app.kubernetes.io/name: flink
+spec:
+  selector:
+    app: raven-setup-flink
+    type: flink-native-kubernetes
+  ports:
+    - name: metrics
+      port: 9249
+      targetPort: metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: raven-setup-flink-metrics
+  namespace: default
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: flink
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: metrics
+      interval: 15s

@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: post-install-create-kafka-topic
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: kafka-admin
+          image: bitnami/kafka:latest
+          command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Waiting for Kafka to be reachable..."
+              for i in {1..30}; do
+                if kafka-topics.sh --bootstrap-server {{ .Values.raven.kafka.service }}:9092 --list; then
+                  echo "Kafka is up!"
+                  break
+                fi
+                echo "Still waiting..."
+                sleep 5
+              done
+
+              echo "Creating topic $TOPIC_NAME..."
+              kafka-topics.sh --bootstrap-server {{ .Values.raven.kafka.service }}:9092 --create --if-not-exists --topic $TOPIC_NAME --partitions $PARTITIONS --replication-factor $REPLICATION_FACTOR
+          env:
+            - name: TOPIC_NAME
+              value: "{{ .Values.raven.kafka.topicName }}"
+            - name: PARTITIONS
+              value: "{{ .Values.raven.kafka.partitions }}"
+            - name: REPLICATION_FACTOR
+              value: "{{ .Values.raven.kafka.replicationFactor }}"

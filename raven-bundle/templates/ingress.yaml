@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: raven-api-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /alert
+            pathType: Prefix
+            backend:
+              service:
+                name: raven-alert-manager-service
+                port:
+                  number: 8080
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: raven-metrics-analyzer-service
+                port:
+                  number: 8081

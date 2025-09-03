@@ -1,0 +1,14 @@
+apiVersion: v2
+name: raven
+version: 1.0.0
+description: Raven dependencies
+dependencies:
+  - name: clickhouse
+    version: 9.4.4
+    repository: https://charts.bitnami.com/bitnami
+  - name: postgresql
+    version: 16.7.27
+    repository: https://charts.bitnami.com/bitnami
+  - name: redis
+    version: 22.x.x
+    repository: https://charts.bitnami.com/bitnami

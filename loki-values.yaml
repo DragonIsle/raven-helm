@@ -1,0 +1,97 @@
+# Grafana Loki Helm Chart Configuration
+# This configuration uses SingleBinary deployment mode for simplicity
+
+deploymentMode: SingleBinary
+
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: true
+    size: 10Gi
+  extraArgs:
+    - -config.expand-env=true
+
+# Disable other components when using SingleBinary mode
+read:
+  replicas: 0
+write:
+  replicas: 0
+backend:
+  replicas: 0
+gateway:
+  enabled: false
+
+loki:
+  auth_enabled: false
+
+  commonConfig:
+    replication_factor: 1
+
+  schemaConfig:
+    configs:
+      - from: 2024-04-01
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+
+  ingester:
+    chunk_encoding: snappy
+
+  storage:
+    type: 'filesystem'
+    filesystem:
+      chunks_directory: /var/loki/chunks
+      rules_directory: /var/loki/rules
+
+  limits_config:
+    retention_period: 744h  # 31 days
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
+    max_cache_freshness_per_query: 10m
+    split_queries_by_interval: 15m
+
+  compactor:
+    working_directory: /var/loki/compactor
+    compaction_interval: 10m
+    retention_enabled: true
+    retention_delete_delay: 2h
+    retention_delete_worker_count: 150
+    delete_request_store: filesystem
+
+  ruler:
+    storage:
+      type: local
+      local:
+        directory: /var/loki/rules
+    rule_path: /var/loki/rules-temp
+    alertmanager_url: http://alertmanager.monitoring.svc.cluster.local:9093
+    ring:
+      kvstore:
+        store: inmemory
+    enable_api: true
+
+# Monitoring and observability
+monitoring:
+  dashboards:
+    enabled: false
+  rules:
+    enabled: false
+  serviceMonitor:
+    enabled: false
+  selfMonitoring:
+    enabled: false
+    grafanaAgent:
+      installOperator: false
+
+# Test configuration
+test:
+  enabled: false
+
+# Disable unnecessary components for minimal setup
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false

@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: raven-post-install-flink-job
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: raven-post-installer
+      restartPolicy: Never
+      volumes:
+        - name: jars
+          emptyDir: {}
+        - name: job-config
+          configMap:
+            name: flink-job-config
+      containers:
+        - name: submit-flink-job
+          image: flink:1.20.2-scala_2.12-java11
+          env:
+            - name: FLINK_SERVICE
+              value: {{ .Values.raven.flink.service }}
+            - name: GITHUB_TOKEN
+              value: {{ .Values.raven.flinkJob.githubToken }}
+            - name: FLINK_JOB_VERSION
+              value: {{ .Values.raven.flinkJob.version }}
+            - name: CLICKHOUSE_USER
+              value: default
+            - name: CLICKHOUSE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.raven.clickhouse.secret }}
+                  key: {{ .Values.raven.clickhouse.secretKey }}
+          volumeMounts:
+            - name: jars
+              mountPath: /jars
+            - name: job-config
+              mountPath: /opt/flink/conf/flink-job.conf
+              subPath: flink-job.conf
+          command:
+            - /bin/sh
+            - -c
+            - |
+              {{ tpl (.Files.Get "files/install_flink_job.sh") . | nindent 14 }}

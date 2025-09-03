@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-clickhouse
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: init-sql
+          configMap:
+            name: clickhouse-init-sql
+      containers:
+        - name: clickhouse-init
+          image: bitnami/clickhouse:latest
+          volumeMounts:
+            - name: init-sql
+              mountPath: /init
+          command: ["sh", "-c"]
+          env:
+            - name: CLICKHOUSE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.raven.clickhouse.secret }}
+                  key: {{ .Values.raven.clickhouse.secretKey }}
+          args:
+            - |
+              echo "Running ClickHouse init..."
+              clickhouse-client -h {{ .Values.raven.clickhouse.service }} -u default --password $CLICKHOUSE_PASSWORD < /init/init.sql

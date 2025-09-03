@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: raven-compact
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: raven-compact
+  template:
+    metadata:
+      labels:
+        app: raven-compact
+    spec:
+      volumes:
+        - name: app-config
+          configMap:
+            name: compact-config
+      imagePullSecrets: {{ toYaml .Values.raven.imagePullSecrets | nindent 8 }}
+      containers:
+        - name: raven-compact
+          image: "{{ .Values.raven.compact.image.repository }}:{{ .Values.raven.compact.image.tag }}"
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.raven.postgres.secret }}
+                  key:  {{ .Values.raven.postgres.secretKey }}
+            - name: CLICKHOUSE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.raven.clickhouse.secret }}
+                  key: {{ .Values.raven.clickhouse.secretKey }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.raven.redis.secret }}
+                  key: {{ .Values.raven.redis.secretKey }}
+            - name: SMTP_USER
+              value: {{ .Values.raven.alertsManager.externalOutputs.email.smtpUser }}
+            - name: SMTP_PASSWORD
+              value: {{ .Values.raven.alertsManager.externalOutputs.email.smtpPassword }}
+            - name: JAVA_OPTS
+              value: -Dconfig.file=/etc/config/application.conf
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: app-config
+              mountPath: /etc/config/
+              readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: raven-compact-service
+spec:
+  selector:
+    app: raven-compact
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

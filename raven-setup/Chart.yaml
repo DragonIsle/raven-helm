@@ -1,0 +1,17 @@
+apiVersion: v2
+name: raven
+version: 1.0.0
+description: Raven dependencies
+dependencies:
+  - name: kafka
+    version: 32.4.3
+    repository: https://charts.bitnami.com/bitnami
+  - name: clickhouse
+    version: 9.4.4
+    repository: https://charts.bitnami.com/bitnami
+  - name: postgresql
+    version: 16.7.27
+    repository: https://charts.bitnami.com/bitnami
+  - name: kafka-ui
+    version: 0.7.6
+    repository: https://provectus.github.io/kafka-ui-charts
