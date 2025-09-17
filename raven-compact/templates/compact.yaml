@@ -37,9 +37,9 @@ spec:
                   name: {{ .Values.raven.redis.secret }}
                   key: {{ .Values.raven.redis.secretKey }}
             - name: SMTP_USER
-              value: {{ .Values.raven.alertsManager.externalOutputs.email.smtpUser }}
+              value: {{ .Values.raven.externalOutputs.email.smtpUser }}
             - name: SMTP_PASSWORD
-              value: {{ .Values.raven.alertsManager.externalOutputs.email.smtpPassword }}
+              value: {{ .Values.raven.externalOutputs.email.smtpPassword }}
             - name: JAVA_OPTS
               value: -Dconfig.file=/etc/config/application.conf
           imagePullPolicy: IfNotPresent

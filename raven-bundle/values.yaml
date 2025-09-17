@@ -14,45 +14,56 @@ raven:
   #    - name: ghcr-secret
 
   # Postgres service name, password secret name and key
+  # Default values are the ones created by raven-setup chart, with a release name 'raven-setup'
   postgres:
     service: raven-setup-postgresql
     secret: raven-setup-postgresql
     secretKey: postgres-password
   # Clickhouse service name, password secret name and key
+  # Default values are the ones created by raven-setup chart, with a release name 'raven-setup'
   clickhouse:
     service: raven-setup-clickhouse
     secret: raven-setup-clickhouse
     secretKey: admin-password
 
-  # Kafka service name and raven AI logs topic config
+  # Kafka service name and raven AI logs topic config,
+  # Default value is the one created by raven-setup chart, with a release name 'raven-setup'
   kafka:
     service: raven-setup-kafka
     topicName: ai-logs
     partitions: 3
     replicationFactor: 1
-  # Flink service name
+  # Flink service name, default value is the one created by bitnami flink chart, with a release name 'raven-setup'
   flink:
     service: raven-setup-flink-rest
-  # Raven Flink job version and token to get it
+  # Raven Flink job version
   flinkJob:
-    version: 0.1.21-SNAPSHOT
-    githubToken:
+    version: 0.1.22-SNAPSHOT
+#    githubToken:
+
 
   # AI logs aggregation config
   aggregation:
+    # Logs will be aggregated per each 'windowTimeRange' period of time
     windowTimeRange: 1 minute
+    # Logs can arrive not later than [current timestamp - 'batchMaxRetention'],
+    # after batchMaxRetention - batch is finalised
     batchMaxRetention: 3 minutes
+    # Real-time data drift alerts reference period
     dataDriftReferencePeriod: 1 hour
 
   # Alerts triggering thresholds and coefficients
   aiAlerts:
+    # Single log alerting thresholds
     singleLog:
       confidenceThreshold: 0.7
       responseTimeThreshold: 500 milliseconds
     aggregatedLogs:
+      # Aggregated logs mean values alerting thresholds
       confidenceThreshold: 0.8
       responseTimeThreshold: 400 milliseconds
       eventAmountThresholdCoeff: 0.5
+      # Data drift alerting thresholds
       drift:
         zScoreThreshold: 3.0
         deltaMeanThreshold: 0.2
@@ -61,25 +72,29 @@ raven:
   alertsManager:
     image:
       repository:
-      tag: 0.1.13-SNAPSHOT
-    # Alert manager external outputs config, if some conf is enabled - other fields should be provided as well,
-    # ex. for slack - webhookUrl is required
-    externalOutputs:
-      slack:
-        enabled: false
-        webhookUrl: ""
-      email:
-        enabled: false
-        mails: [ ]
-        smtpUser: ""
-        smtpPassword: ""
-        smtpHost: ""
-        smtpPort: 587
-        emailFrom: ""
+      tag: 0.1.14-SNAPSHOT
+      # Alert management external outputs config, if some conf is enabled - other fields should be provided as well,
+      # ex. for slack - webhookUrl is required
+      externalOutputs:
+        slack:
+          enabled: false
+          # https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/
+          webhookUrl: ""
+        email:
+          enabled: false
+          # List of emails to send alerts to
+          mails: []
+          # Email from which alerts will be sent (should correspond to email provider allowed domain)
+          emailFrom: ""
+          smtpUser: ""
+          smtpPassword: ""
+          smtpHost: ""
+          smtpPort: 587
+
   metricsAnalyzer:
     image:
       repository: ghcr.io/dragonisle/raven-metrics-analyzer
-      tag: 0.1.13-SNAPSHOT
+      tag: 0.1.14-SNAPSHOT
   dashboard:
     image:
       repository: ghcr.io/dragonisle/raven-ui
