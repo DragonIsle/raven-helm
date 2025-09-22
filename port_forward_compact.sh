@@ -12,6 +12,6 @@ echo "REDIS_PW: $REDIS_PW"
 kubectl port-forward svc/raven-compact-service -n default 8080:8080 &
 #kubectl port-forward svc/raven-setup-clickhouse -n default 8123:8123 &
 #kubectl port-forward svc/raven-setup-postgresql -n default 5432:5432 &
-kubectl port-forward svc/raven-dashboard-service 5173:5173 &
+#kubectl port-forward svc/raven-dashboard-service 5173:5173 &
 
 wait

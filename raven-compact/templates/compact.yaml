@@ -21,21 +21,46 @@ spec:
         - name: raven-compact
           image: "{{ .Values.raven.compact.image.repository }}:{{ .Values.raven.compact.image.tag }}"
           env:
+            {{ - if .Values.raven.postgres.secretKeyUser }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.raven.postgres.secret }}
+                  key: {{ .Values.raven.postgres.secretKeyUser }}
+            {{ - else }}
+            - name: POSTGRES_USER
+              value: "postgres"
+            {{ - end }}
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.raven.postgres.secret }}
-                  key:  {{ .Values.raven.postgres.secretKey }}
+                  key: {{ .Values.raven.postgres.secretKeyPw }}
+            {{ - if .Values.raven.postgres.secretKeyDb }}
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.raven.postgres.secret }}
+                  key: {{ .Values.raven.postgres.secretKeyDb }}
+            {{ - else }}
+            - name: POSTGRES_DB
+              value: "postgres"
+            {{ - end }}
             - name: CLICKHOUSE_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.raven.clickhouse.secret }}
                   key: {{ .Values.raven.clickhouse.secretKey }}
+            {{- if .Values.raven.redis.secret }}
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.raven.redis.secret }}
                   key: {{ .Values.raven.redis.secretKey }}
+            {{- else }}
+            - name: REDIS_PASSWORD
+              value: ""
+            {{- end }}
             - name: SMTP_USER
               value: {{ .Values.raven.externalOutputs.email.smtpUser }}
             - name: SMTP_PASSWORD

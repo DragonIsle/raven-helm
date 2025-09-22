@@ -16,9 +16,11 @@ raven:
   # Postgres service name, password secret name and key
   # Default values are the ones created by raven-setup chart, with a release name 'raven-setup'
   postgres:
-    service: raven-setup-postgresql
-    secret: raven-setup-postgresql
-    secretKey: postgres-password
+    service: raven-setup-rw
+    secret: raven-setup-app
+    secretKeyUser: user
+    secretKeyPw: password
+    secretKeyDb: dbname
   # Clickhouse service name, password secret name and key
   # Default values are the ones created by raven-setup chart, with a release name 'raven-setup'
   clickhouse:
@@ -38,7 +40,7 @@ raven:
     service: raven-setup-flink-rest
   # Raven Flink job version
   flinkJob:
-    version: 0.1.22-SNAPSHOT
+    version: ""
 #    githubToken:
 
 
@@ -72,7 +74,7 @@ raven:
   alertsManager:
     image:
       repository:
-      tag: 0.1.14-SNAPSHOT
+      tag: ""
       # Alert management external outputs config, if some conf is enabled - other fields should be provided as well,
       # ex. for slack - webhookUrl is required
       externalOutputs:
@@ -94,8 +96,8 @@ raven:
   metricsAnalyzer:
     image:
       repository: ghcr.io/dragonisle/raven-metrics-analyzer
-      tag: 0.1.14-SNAPSHOT
+      tag: ""
   dashboard:
     image:
       repository: ghcr.io/dragonisle/raven-ui
-      tag: 0.1.2
+      tag: ""

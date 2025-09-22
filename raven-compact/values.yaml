@@ -2,32 +2,24 @@ raven:
   # Your Raven licence key
   licenseKey: ""
 
-  # Docker credentials for pulling images (do not touch it until necessary, by default images should be available without it)
-#  docker:
-#    server:
-#    username:
-#    password:
-  # Image pull secrets used to fetch raven images
-  # (ghrc-secret is the secret automatically created from the above docker credentials),
-  # by default images should available without it
-#  imagePullSecrets:
-#    - name: ghcr-secret
   # Raven docker images config
   compact:
     image:
       repository: ghcr.io/dragonisle/raven-compact
-      tag: 0.1.13-SNAPSHOT
+      tag: ""
   dashboard:
     image:
       repository: ghcr.io/dragonisle/raven-ui
-      tag: 0.1.2
+      tag: ""
   # Postgres service name, password secret name and key
   # Default value are the ones created by bitnami postgres chart,
   # with a release name 'raven-setup-postgresql'
   postgres:
-    service: raven-setup-postgresql
-    secret: raven-setup-postgresql
-    secretKey: postgres-password
+    service: raven-setup-rw
+    secret: raven-setup-app
+    secretKeyUser: user
+    secretKeyPw: password
+    secretKeyDb: dbname
   # Clickhouse service name, password secret name and key
   # Default value are the ones created by bitnami clickhouse chart,
   # with a release name 'raven-setup-clickhouse'
@@ -39,9 +31,9 @@ raven:
   # Default value are the ones created by bitnami redis chart,
   # with a release name 'raven-setup-redis'
   redis:
-    service: raven-setup-redis-master
-    secret: raven-setup-redis
-    secretKey: redis-password
+    service: raven-setup-dragonfly
+  #    secret: raven-setup-redis
+  #    secretKey: redis-password
 
   # Alert management external outputs config, if some conf is enabled - other fields should be provided as well,
   # ex. for slack - webhookUrl is required
