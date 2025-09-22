@@ -16,9 +16,9 @@ spec:
         - name: app-config
           configMap:
             name: metrics-analyzer-config
-      {{ - with .Values.raven.imagePullSecrets }}
-      imagePullSecrets: {{ - toYaml . | nindent 8 }}
-      {{ - end }}
+      {{- with .Values.raven.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: raven-metrics-analyzer
           image: "{{ .Values.raven.metricsAnalyzer.image.repository }}:{{ .Values.raven.metricsAnalyzer.image.tag }}"

@@ -12,9 +12,9 @@ spec:
       labels:
         app: raven-dashboard
     spec:
-      {{ - with .Values.raven.imagePullSecrets }}
-      imagePullSecrets: {{ - toYaml . | nindent 8 }}
-      {{ - end }}
+      {{- with .Values.raven.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: raven-dashboard
           image: "{{ .Values.raven.dashboard.image.repository }}:{{ .Values.raven.dashboard.image.tag }}"

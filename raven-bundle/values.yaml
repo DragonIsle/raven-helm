@@ -3,15 +3,12 @@ raven:
   licenseKey: ""
 
   # Docker credentials for pulling images (do not touch it until necessary, by default images should be available without it)
-  #  docker:
-  #    server:
-  #    username:
-  #    password:
-  # Image pull secrets used to fetch raven images
-  # (ghrc-secret is the secret automatically created from the above docker credentials),
-  # by default images should available without it
-  #  imagePullSecrets:
-  #    - name: ghcr-secret
+  docker:
+    server: ghcr.io
+    username: dragonisle
+    password: ""
+  imagePullSecrets:
+    - name: ghcr-secret
 
   # Postgres service name, password secret name and key
   # Default values are the ones created by raven-setup chart, with a release name 'raven-setup'
@@ -40,7 +37,7 @@ raven:
     service: raven-setup-flink-rest
   # Raven Flink job version
   flinkJob:
-    version: ""
+    version: 0.1.22-SNAPSHOT
 #    githubToken:
 
 
@@ -74,30 +71,30 @@ raven:
   alertsManager:
     image:
       repository:
-      tag: ""
+      tag: 0.1.14-SNAPSHOT
       # Alert management external outputs config, if some conf is enabled - other fields should be provided as well,
       # ex. for slack - webhookUrl is required
-      externalOutputs:
-        slack:
-          enabled: false
-          # https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/
-          webhookUrl: ""
-        email:
-          enabled: false
-          # List of emails to send alerts to
-          mails: []
-          # Email from which alerts will be sent (should correspond to email provider allowed domain)
-          emailFrom: ""
-          smtpUser: ""
-          smtpPassword: ""
-          smtpHost: ""
-          smtpPort: 587
+    externalOutputs:
+      slack:
+        enabled: false
+        # https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/
+        webhookUrl: ""
+      email:
+        enabled: false
+        # List of emails to send alerts to
+        mails: []
+        # Email from which alerts will be sent (should correspond to email provider allowed domain)
+        emailFrom: ""
+        smtpUser: ""
+        smtpPassword: ""
+        smtpHost: ""
+        smtpPort: 587
 
   metricsAnalyzer:
     image:
       repository: ghcr.io/dragonisle/raven-metrics-analyzer
-      tag: ""
+      tag: 0.1.14-SNAPSHOT
   dashboard:
     image:
       repository: ghcr.io/dragonisle/raven-ui
-      tag: ""
+      tag: 0.1.2
