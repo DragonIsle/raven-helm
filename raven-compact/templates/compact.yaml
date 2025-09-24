@@ -21,31 +21,31 @@ spec:
         - name: raven-compact
           image: "{{ .Values.raven.compact.image.repository }}:{{ .Values.raven.compact.image.tag }}"
           env:
-            {{ - if .Values.raven.postgres.secretKeyUser }}
+            {{- if .Values.raven.postgres.secretKeyUser }}
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.raven.postgres.secret }}
                   key: {{ .Values.raven.postgres.secretKeyUser }}
-            {{ - else }}
+            {{- else }}
             - name: POSTGRES_USER
               value: "postgres"
-            {{ - end }}
+            {{- end }}
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.raven.postgres.secret }}
                   key: {{ .Values.raven.postgres.secretKeyPw }}
-            {{ - if .Values.raven.postgres.secretKeyDb }}
+            {{- if .Values.raven.postgres.secretKeyDb }}
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.raven.postgres.secret }}
                   key: {{ .Values.raven.postgres.secretKeyDb }}
-            {{ - else }}
+            {{- else }}
             - name: POSTGRES_DB
               value: "postgres"
-            {{ - end }}
+            {{- end }}
             - name: CLICKHOUSE_PASSWORD
               valueFrom:
                 secretKeyRef:

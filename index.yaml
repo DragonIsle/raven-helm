@@ -2,25 +2,25 @@ apiVersion: v1
 entries:
   raven:
   - apiVersion: v2
-    created: "2025-09-23T16:32:55.216545+02:00"
+    created: "2025-09-24T16:07:15.983664+02:00"
     description: Raven application
-    digest: ab0c0d87c496a0de70d657043039007c2177a090528c253e64b5e4c0a2682e9f
+    digest: 7efec57e9aa49f86c2f211c30e490d8ac8ff8996456a2d98130923160de7acb1
     name: raven
     urls:
     - https://dragonisle.github.io/raven-helm/raven-1.0.0.tgz
     version: 1.0.0
   raven-compact:
   - apiVersion: v2
-    created: "2025-09-23T16:32:55.217532+02:00"
+    created: "2025-09-24T16:07:15.984165+02:00"
     description: Raven application (compact version)
-    digest: e70bfa678cdf7e9eb6dfef47239808dc492188c43d37f7787bc3e7d729cc9235
+    digest: b7c60b7f1906b3beb9de31c5b2f31aa4a803fa6126764fdd4d975b8d6f3d4a43
     name: raven-compact
     urls:
     - https://dragonisle.github.io/raven-helm/raven-compact-1.0.0.tgz
     version: 1.0.0
   raven-setup:
   - apiVersion: v2
-    created: "2025-09-23T16:32:55.228091+02:00"
+    created: "2025-09-24T16:07:15.992095+02:00"
     dependencies:
     - name: kafka
       repository: https://charts.bitnami.com/bitnami
@@ -32,9 +32,9 @@ entries:
       repository: https://provectus.github.io/kafka-ui-charts
       version: 0.7.6
     description: Raven dependencies
-    digest: bf453b441d5824680b870c9cbf0c47f319eae10227be537cf70eae1fec2541c8
+    digest: 52c36c6762ddc6f04f81d9c6fd4a574637aa94a5cc0d3db08749f4ddadfd5b44
     name: raven-setup
     urls:
     - https://dragonisle.github.io/raven-helm/raven-setup-1.0.0.tgz
     version: 1.0.0
-generated: "2025-09-23T16:32:55.215402+02:00"
+generated: "2025-09-24T16:07:15.982847+02:00"
