@@ -2,6 +2,14 @@ raven:
   # Your Raven licence key
   licenseKey: ""
 
+  # Docker credentials for pulling images (do not touch it until necessary, by default images should be available without it)
+  docker:
+    server: ghcr.io
+    username: dragonisle
+    password: ""
+  imagePullSecrets:
+    - name: ghcr-secret
+
   # Raven docker images config
   compact:
     image:
